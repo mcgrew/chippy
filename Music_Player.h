@@ -4,7 +4,7 @@
 #ifndef MUSIC_PLAYER_H
 #define MUSIC_PLAYER_H
 
-#include "gme.h"
+#include "gme/gme.h"
 
 class Music_Player {
 public:
