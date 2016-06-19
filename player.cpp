@@ -18,6 +18,7 @@ int const scope_width = 512;
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <vector>
 #include "SDL.h"
 
 void handle_error( const char* );
@@ -82,16 +83,18 @@ static void start_track( int track, const char* path )
 int main( int argc, char** argv )
 {
 	init();
-  int fileidx = 1;
+  std::vector<int> order;
+  for (int i=1; i < argc; i++) order.push_back(i);
+  int fileidx = 0;
   bool running = true;
   bool next_file = false;
 	
   while ( running ) {
     next_file = false;
     // Load file
-    if (fileidx >= argc)
+    if (fileidx >= order.size())
       exit(0);
-    const char* path = argv [fileidx];
+    const char* path = argv [order[fileidx]];
     handle_error( player->load_file( path ) );
     start_track( 1, path );
     
@@ -113,10 +116,11 @@ int main( int argc, char** argv )
       {
         if ( track < player->track_count() ) {
           start_track( ++track, path );
-        } else {
+        } else if ( fileidx < order.size()-1 ) {
           fileidx++;
           break;
-//          player->pause( paused = true );
+        } else {
+          player->pause( paused = true );
         }
       }
       
@@ -143,7 +147,7 @@ int main( int argc, char** argv )
           case SDLK_LEFT: // prev track
             if ( !paused && !--track ) {
               track = 1;
-              if ( fileidx > 1 ) {
+              if ( fileidx > 0 ) {
                 fileidx--;
                   next_file = true;
                 break;
@@ -155,7 +159,7 @@ int main( int argc, char** argv )
           case SDLK_RIGHT: // next track
             if ( track < player->track_count() )
               start_track( ++track, path );
-            else if ( fileidx < argc ) {
+            else if ( fileidx < order.size()-1 ) {
               fileidx++;
               next_file = true;
             }
