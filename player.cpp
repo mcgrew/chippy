@@ -14,6 +14,7 @@ int const scope_width = 512;
 
 #include "Music_Player.h"
 #include "Audio_Scope.h"
+#include "Playlist.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -84,6 +85,8 @@ int main( int argc, char** argv )
 {
 	init();
   std::vector<int> order;
+  Playlist playlist;
+  
   for (int i=1; i < argc; i++) order.push_back(i);
   int fileidx = 0;
   bool running = true;

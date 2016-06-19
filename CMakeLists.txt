@@ -4,6 +4,8 @@ set(player_SRCS Audio_Scope.cpp
                 Audio_Scope.h
                 Music_Player.cpp
                 Music_Player.h
+                Playlist.cpp
+                Playlist.h
                 player.cpp)
 
 if(SDL_FOUND)
