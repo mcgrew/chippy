@@ -82,13 +82,14 @@ static void start_track( int track, const char* path )
 int main( int argc, char** argv )
 {
 	init();
-  int fileidx = argc;
+  int fileidx = 1;
   bool running = true;
+  bool next_file = false;
 	
   while ( running ) {
+    next_file = false;
     // Load file
-    --fileidx;
-    if (fileidx < 1)
+    if (fileidx >= argc)
       exit(0);
     const char* path = argv [fileidx];
     handle_error( player->load_file( path ) );
@@ -100,7 +101,7 @@ int main( int argc, char** argv )
     double stereo_depth = 0.0;
     bool accurate = true;;
     int muting_mask = 0;
-    while ( running )
+    while ( !next_file )
     {
       SDL_Delay( 1000 / 100 );
       
@@ -110,11 +111,13 @@ int main( int argc, char** argv )
       // Automatically go to next track when current one ends
       if ( player->track_ended() )
       {
-        if ( track < player->track_count() )
+        if ( track < player->track_count() ) {
           start_track( ++track, path );
-        else
+        } else {
+          fileidx++;
           break;
 //          player->pause( paused = true );
+        }
       }
       
       // Handle keyboard input
@@ -125,6 +128,7 @@ int main( int argc, char** argv )
         {
         case SDL_QUIT:
           running = false;
+          next_file = true;
           break;
         
         case SDL_KEYDOWN:
@@ -137,14 +141,24 @@ int main( int argc, char** argv )
             break;
           
           case SDLK_LEFT: // prev track
-            if ( !paused && !--track )
+            if ( !paused && !--track ) {
               track = 1;
+              if ( fileidx > 1 ) {
+                fileidx--;
+                  next_file = true;
+                break;
+              }
+            }
             start_track( track, path );
             break;
           
           case SDLK_RIGHT: // next track
             if ( track < player->track_count() )
               start_track( ++track, path );
+            else if ( fileidx < argc ) {
+              fileidx++;
+              next_file = true;
+            }
             break;
           
           case SDLK_MINUS: // reduce tempo
