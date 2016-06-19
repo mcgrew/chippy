@@ -13,8 +13,8 @@ if(SDL_FOUND)
         "${CMAKE_HOME_DIRECTORY}" "${CMAKE_HOME_DIRECTORY}/gme"
         "${CMAKE_BINARY_DIR}/gme")
 
-    add_executable(chipper ${player_SRCS})
-    target_link_libraries(chipper ${SDL_LIBRARY} gme)
+    add_executable(chippy ${player_SRCS})
+    target_link_libraries(chippy ${SDL_LIBRARY} gme)
 
     # Is not to be installed though
 else()
