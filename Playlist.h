@@ -14,7 +14,7 @@ public:
   Track(std::string file, std::size_t tracknum);
   ~Track();
   std::string file;
-  std::string tracknum;
+  std::size_t tracknum;
   std::string trackname;
   bool is(std::string file, std::size_t tracknum);
 };
@@ -28,7 +28,7 @@ public:
   
   bool add_track(std::string file, std::size_t tracknum);
   std::size_t add_tracks(std::string file);
-  Track remove_track(std::size_t index);
+  bool remove_track(std::size_t index);
   Track current_track();
   Track get_track(std::size_t index);
   void shuffle();
