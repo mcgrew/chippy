@@ -25,13 +25,14 @@ public:
   Playlist(std::string playlist_file);
   ~Playlist();
   std::vector<Track> tracks; 
+  std::vector<std::size_t> play_order;
   
   bool add_track(std::string file, std::size_t tracknum);
   std::size_t add_tracks(std::string file);
   bool remove_track(std::size_t index);
   Track current_track();
   Track get_track(std::size_t index);
-  void shuffle();
+  void shuffle(bool shuffle, bool live);
   void repeat(bool);
 
   std::size_t advance();

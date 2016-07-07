@@ -122,9 +122,7 @@ int main( int argc, char** argv )
 	init();
 
   player->populate_playlist(argc, argv);
-  if (opts.shuffle) {
-    player->playlist.shuffle();
-  }
+  player->playlist.shuffle(opts.shuffle, false);
   player->playlist.repeat(opts.repeat);
   
   bool running = true;
@@ -237,6 +235,15 @@ int main( int argc, char** argv )
             player->set_tempo( tempo );
             player->mute_voices( muting_mask );
             break;
+
+          case SDLK_s: // enable shuffle
+            opts.shuffle = !opts.shuffle;
+            player->playlist.shuffle(opts.shuffle, true);
+            break;
+
+          case SDLK_r: // enable/disable repeat
+            opts.repeat = !opts.repeat;
+            player->playlist.repeat(opts.repeat);
           
           default:
             if ( SDLK_1 <= key && key <= SDLK_9 ) // toggle muting

@@ -69,6 +69,7 @@ Playlist::~Playlist() {
  * @return true if the operation succeeded.
  */
 bool Playlist::add_track(std::string file, std::size_t tracknum) {
+  this->play_order.emplace_back(this->tracks.size());
   this->tracks.emplace_back(file, tracknum);
 }
 
@@ -93,6 +94,7 @@ bool Playlist::remove_track(std::size_t index) {
 //    delete this->tracks.at(index)
     for (size_t i = index; i < this->tracks.size()-1; i++) {
       this->tracks[i] = this->tracks[i+1];
+      this->play_order[i]--;
     }
     this->tracks.pop_back();
     return true;
@@ -106,7 +108,7 @@ bool Playlist::remove_track(std::size_t index) {
  * @return The current track
  */
 Track Playlist::current_track() {
-  return this->tracks.at(this->current_track_);
+  return this->tracks.at(this->play_order[this->current_track_]);
 }
 
 /**
@@ -116,16 +118,38 @@ Track Playlist::current_track() {
  * @return The requested track.
  */
 Track Playlist::get_track(std::size_t index) {
-  return this->tracks.at(index);
+  return this->tracks.at(this->play_order[index]);
 }
 
 /**
  * Shuffles the playlist
  */
-void Playlist::shuffle() {
-  int seed = std::chrono::system_clock::now().time_since_epoch().count();
-  std::shuffle(this->tracks.begin(), this->tracks.end(), 
-            std::default_random_engine( seed ));
+void Playlist::shuffle(bool shuffle, bool live) {
+  std::size_t now_playing = this->play_order[this->current_track_];
+  if (shuffle) {
+    int seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(this->play_order.begin(), this->play_order.end(), 
+              std::default_random_engine( seed ));
+    // if this is a live shuffle, move the currently playing track to the front
+    // and set our track pointer to it.
+    if (live) {
+      for (std::size_t i=0; i < this->tracks.size(); i++) {
+        if (this->play_order[i] == now_playing) {
+          this->play_order[i] = this->play_order[0];
+          break;
+        }
+        this->play_order[0] = now_playing;
+        this->current_track_ = 0;
+      }
+    }
+  } else {
+    this->play_order.clear();
+    for (std::size_t i=0; i < this->tracks.size(); i++) {
+      this->play_order.emplace_back(i);
+    }
+    if (live)
+      this->current_track_ = now_playing;
+  }
 }
 
 void Playlist::repeat(bool repeat) {
@@ -196,6 +220,7 @@ std::size_t Playlist::size() {
 
 void Playlist::clear() {
   this->tracks.clear();
+  this->play_order.clear();
 }
 
 
