@@ -152,10 +152,10 @@ int main( int argc, char** argv )
       {
         if (!player->playlist.at_end()) {
           player->playlist.advance();
+          next_file = true;
         } else {
           player->pause( paused = true );
         }
-        next_file = true;
       }
       
       // Handle keyboard input

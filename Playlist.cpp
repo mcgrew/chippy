@@ -211,7 +211,7 @@ bool Playlist::at_beginning() {
  * @return true if the playlist is at it's last track.
  */
 bool Playlist::at_end() {
-  return !(this->repeat_ || (this->current_track_ < this->size()-1));
+  return !(this->repeat_ || (this->current_track_ < this->tracks.size() - 1));
 }
 
 std::size_t Playlist::size() {
