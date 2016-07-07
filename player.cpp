@@ -84,22 +84,18 @@ static void start_track( int track, const char* path )
 int main( int argc, char** argv )
 {
 	init();
-  std::vector<int> order;
-  Playlist playlist;
+
+  player->populate_playlist(argc, argv);
+  player->playlist.shuffle();
   
-  for (int i=1; i < argc; i++) order.push_back(i);
-  int fileidx = 0;
   bool running = true;
   bool next_file = false;
 	
   while ( running ) {
     next_file = false;
-    // Load file
-    if (fileidx >= order.size())
-      exit(0);
-    const char* path = argv [order[fileidx]];
-    handle_error( player->load_file( path ) );
-    start_track( 1, path );
+    Track playlist_track = player->playlist.current_track();
+    handle_error( player->load_file( playlist_track.file.c_str( )));
+    start_track( playlist_track.tracknum, playlist_track.file.c_str( ));
     
     // Main loop
     int track = 1;
@@ -117,14 +113,12 @@ int main( int argc, char** argv )
       // Automatically go to next track when current one ends
       if ( player->track_ended() )
       {
-        if ( track < player->track_count() ) {
-          start_track( ++track, path );
-        } else if ( fileidx < order.size()-1 ) {
-          fileidx++;
-          break;
+        if (!player->playlist.at_end()) {
+          player->playlist.advance();
         } else {
           player->pause( paused = true );
         }
+        next_file = true;
       }
       
       // Handle keyboard input
@@ -150,20 +144,19 @@ int main( int argc, char** argv )
           case SDLK_LEFT: // prev track
             if ( !paused && !--track ) {
               track = 1;
-              if ( fileidx > 0 ) {
-                fileidx--;
-                  next_file = true;
+              if ( !player->playlist.at_beginning() ) {
+                player->playlist.back();
+                next_file = true;
                 break;
               }
             }
-            start_track( track, path );
+            playlist_track = player->playlist.current_track();
+            start_track( playlist_track.tracknum, playlist_track.file.c_str());
             break;
           
           case SDLK_RIGHT: // next track
-            if ( track < player->track_count() )
-              start_track( ++track, path );
-            else if ( fileidx < order.size()-1 ) {
-              fileidx++;
+            if (!player->playlist.at_end()) {
+              player->playlist.advance();
               next_file = true;
             }
             break;

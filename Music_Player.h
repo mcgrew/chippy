@@ -5,6 +5,7 @@
 #define MUSIC_PLAYER_H
 
 #include "gme/gme.h"
+#include "Playlist.h"
 
 class Music_Player {
 public:
@@ -49,9 +50,13 @@ public:
 	// Set voice muting bitmask
 	void mute_voices( int );
 	
+  Playlist playlist;
+  std::size_t populate_playlist( int argc, char ** argv );
+
 	// Set buffer to copy samples from each buffer into, or NULL to disable
 	typedef short sample_t;
 	void set_scope_buffer( sample_t* buf, int size ) { scope_buf = buf; scope_buf_size = size; }
+
 	
 public:
 	Music_Player();

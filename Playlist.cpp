@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <random>
+#include <chrono>
 
 
 /**
@@ -123,8 +124,9 @@ Track Playlist::get_track(std::size_t index) {
  * Shuffles the playlist
  */
 void Playlist::shuffle() {
+  int seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::shuffle(this->tracks.begin(), this->tracks.end(), 
-            std::default_random_engine());
+            std::default_random_engine( seed ));
 }
 
 /**
@@ -161,6 +163,27 @@ std::size_t Playlist::jump_to(std::size_t tracknum) {
   return this->current_track_;
 }
 
+/**
+ * Determines whether the playlist is at the beginning.
+ * 
+ * @return true if the playlist it at it's first track.
+ */
+bool Playlist::at_beginning() {
+  return this->current_track_ <= 0;
+}
 
+/**
+ * Determines whether the playlist is at it's end.
+ * 
+ * @return true if the playlist is at it's last track.
+ */
+bool Playlist::at_end() {
+  return !(this->current_track_ < this->size-1);
+}
+
+void Playlist::clear() {
+  this->tracks.clear();
+  this->size = 0;
+}
 
 

@@ -1,6 +1,7 @@
 // Game_Music_Emu 0.5.5. http://www.slack.net/~ant/
 
 #include "Music_Player.h"
+#include "Playlist.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -187,6 +188,18 @@ void Music_Player::fill_buffer( void* data, sample_t* out, int count )
 			memcpy( self->scope_buf, out, self->scope_buf_size * sizeof *self->scope_buf );
 	}
 }
+
+std::size_t Music_Player::populate_playlist( int argc, char** argv) {
+  this->playlist.clear();
+  for (int i=1; i < argc; i++) {
+    this->load_file( argv[i] ); 
+    for (int j=1; j <= this->track_count(); j++) {
+      this->playlist.add_track(argv[i], j);
+    }
+  }
+  return this->playlist.size;
+}
+
 
 // Sound output driver using SDL
 
