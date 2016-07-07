@@ -44,7 +44,6 @@ bool Track::is(std::string file, std::size_t tracknum) {
  */
 Playlist::Playlist() {
   this->current_track_ = 0;
-  this->size = 0;
 }
 
 /**
@@ -129,6 +128,10 @@ void Playlist::shuffle() {
             std::default_random_engine( seed ));
 }
 
+void Playlist::repeat(bool repeat) {
+  this->repeat_ = repeat;
+}
+
 /**
  * Advances the playlist by one track.
  * 
@@ -137,6 +140,9 @@ void Playlist::shuffle() {
 std::size_t Playlist::advance() {
   if (this->current_track_ < this->tracks.size()-1)
     this->current_track_++;
+  else if (this->repeat_) {
+    this->current_track_ = 0;
+  }
   return this->current_track_;
 }
 
@@ -148,6 +154,9 @@ std::size_t Playlist::advance() {
 std::size_t Playlist::back() {
   if (this->current_track_ > 0)
     this->current_track_--;
+  else if (this->repeat_) {
+    this->current_track_ = this->size() - 1;
+  }
   return this->current_track_;
 }
 
@@ -169,7 +178,7 @@ std::size_t Playlist::jump_to(std::size_t tracknum) {
  * @return true if the playlist it at it's first track.
  */
 bool Playlist::at_beginning() {
-  return this->current_track_ <= 0;
+  return !this->repeat_ && this->current_track_ <= 0;
 }
 
 /**
@@ -178,12 +187,15 @@ bool Playlist::at_beginning() {
  * @return true if the playlist is at it's last track.
  */
 bool Playlist::at_end() {
-  return !(this->current_track_ < this->size-1);
+  return !(this->repeat_ || (this->current_track_ < this->size()-1));
+}
+
+std::size_t Playlist::size() {
+  return this->tracks.size();
 }
 
 void Playlist::clear() {
   this->tracks.clear();
-  this->size = 0;
 }
 
 

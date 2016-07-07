@@ -32,18 +32,21 @@ public:
   Track current_track();
   Track get_track(std::size_t index);
   void shuffle();
+  void repeat(bool);
+
   std::size_t advance();
   std::size_t back();
   std::size_t jump_to(std::size_t tracknum);
   bool at_beginning();
   bool at_end();
-  std::size_t size;
+  std::size_t size();
   void clear();
   
 private:
   
   std::size_t current_track_;
   std::size_t tracks_from_file(std::string file);
+  bool repeat_;
 
 };
 

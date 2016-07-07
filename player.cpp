@@ -29,6 +29,11 @@ static Audio_Scope* scope;
 static Music_Player* player;
 static short scope_buf [scope_width * 2];
 
+typedef struct {
+  bool shuffle;
+  bool repeat;
+} flags;
+
 static void init()
 {
 	// Start SDL
@@ -81,12 +86,46 @@ static void start_track( int track, const char* path )
 	SDL_WM_SetCaption( title, title );
 }
 
+void parseopts( int argc, char** argv, flags &opts ) {
+  for (int i=1; i < argc; i++) {
+    if ( argv[i][0] == '-' ) {
+      if ( argv[i][1] != '-' ) {
+        // parse short options
+        std::size_t len = strlen(argv[i]);
+        for (int j=1; j < len; j++) {
+          switch (argv[i][j]) {
+            case 's':
+              opts.shuffle = true;
+              break;
+            case 'r':
+              opts.repeat = true;
+              break;
+          }
+        }
+      } else {
+        // parse long options
+        if (!strcmp("shuffle", argv[i]+2)) {
+          opts.shuffle = true;
+        }
+        if (!strcmp("repeat", argv[i]+2)) {
+          opts.repeat = true;
+        }
+      }
+    }
+  }
+}
+
 int main( int argc, char** argv )
 {
+  flags opts;
+  parseopts( argc, argv, opts );
 	init();
 
   player->populate_playlist(argc, argv);
-  player->playlist.shuffle();
+  if (opts.shuffle) {
+    player->playlist.shuffle();
+  }
+  player->playlist.repeat(opts.repeat);
   
   bool running = true;
   bool next_file = false;

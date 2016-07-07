@@ -192,12 +192,14 @@ void Music_Player::fill_buffer( void* data, sample_t* out, int count )
 std::size_t Music_Player::populate_playlist( int argc, char** argv) {
   this->playlist.clear();
   for (int i=1; i < argc; i++) {
-    this->load_file( argv[i] ); 
-    for (int j=1; j <= this->track_count(); j++) {
-      this->playlist.add_track(argv[i], j);
+    if ( argv[i][0] != '-' ) {
+      this->load_file( argv[i] ); 
+      for (int j=1; j <= this->track_count(); j++) {
+        this->playlist.add_track(argv[i], j);
+      }
     }
   }
-  return this->playlist.size;
+  return this->playlist.size();
 }
 
 
