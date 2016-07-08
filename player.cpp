@@ -141,6 +141,8 @@ void parseopts( int argc, char** argv, flags &opts ) {
 int main( int argc, char** argv )
 {
   flags opts;
+  opts.shuffle = false;
+  opts.repeat = false;
   parseopts( argc, argv, opts );
 	init();
 
