@@ -20,6 +20,8 @@ int const scope_width = 512;
 #include <stdlib.h>
 #include <stdio.h>
 #include <vector>
+#include <iostream>
+#include <fstream>
 #include "SDL.h"
 
 void handle_error( const char* );
@@ -80,10 +82,29 @@ static void start_track( int track, const char* path )
 	}
 	
 	char title [512];
-	sprintf( title, "%s: %d/%d %s (%ld:%02ld)",
-			game, track, player->track_count(), player->track_info().song,
-			seconds / 60, seconds % 60 );
-	SDL_WM_SetCaption( title, title );
+  if (player->track_count() <= 1) {
+    sprintf( title, "Chippy - %s: %s (%ld:%02ld)",
+        game, player->track_info().song, seconds / 60, seconds % 60 );
+  } else {
+    sprintf( title, "Chippy - %s: %d/%d %s (%ld:%02ld)",
+        game, track, player->track_count(), player->track_info().song,
+        seconds / 60, seconds % 60 );
+  }
+  SDL_WM_SetCaption( title, title );
+
+  // temporary code
+//  if (player->track_count() <= 1) {
+//    sprintf( title, "%s\n%s",
+//        game, player->track_info().song, seconds / 60, seconds % 60 );
+//  } else {
+//    sprintf( title, "%s\nTrack %d",
+//        game, track, player->track_count(), player->track_info().song,
+//        seconds / 60, seconds % 60 );
+//  }
+//  std::ofstream myfile;
+//  myfile.open ("/tmp/track.txt");
+//  myfile << title;
+//  myfile.close();
 }
 
 void parseopts( int argc, char** argv, flags &opts ) {
