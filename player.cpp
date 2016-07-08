@@ -92,19 +92,21 @@ static void start_track( int track, const char* path )
   }
   SDL_WM_SetCaption( title, title );
 
-  // temporary code
-//  if (player->track_count() <= 1) {
-//    sprintf( title, "%s\n%s",
-//        game, player->track_info().song, seconds / 60, seconds % 60 );
-//  } else {
-//    sprintf( title, "%s\nTrack %d",
-//        game, track, player->track_count(), player->track_info().song,
-//        seconds / 60, seconds % 60 );
-//  }
-//  std::ofstream myfile;
-//  myfile.open ("/tmp/track.txt");
-//  myfile << title;
-//  myfile.close();
+  char* now_playing_file;
+  if (now_playing_file = std::getenv("CHIPPY_NOW_PLAYING_FILE")) {
+    if (player->track_count() <= 1) {
+      sprintf( title, "%s\n%s",
+          game, player->track_info().song, seconds / 60, seconds % 60 );
+    } else {
+      sprintf( title, "%s\nTrack %d",
+          game, track, player->track_count(), player->track_info().song,
+          seconds / 60, seconds % 60 );
+    }
+    std::ofstream myfile;
+    myfile.open (now_playing_file);
+    myfile << title;
+    myfile.close();
+  }
 }
 
 void parseopts( int argc, char** argv, flags &opts ) {
