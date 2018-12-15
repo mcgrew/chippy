@@ -3,7 +3,7 @@
 #include "Music_Player.h"
 #include "Playlist.h"
 
-#include <string.h>
+#include <cstring>
 #include <ctype.h>
 
 /* Copyright (C) 2005-2010 by Shay Green. Permission is hereby granted, free of

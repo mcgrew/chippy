@@ -8,45 +8,49 @@
 
 #include "gme/gme.h"
 
+using std::string;
+using std::vector;
+using std::size_t;
+
 class Track {
 public:
-  Track(std::string file);
-  Track(std::string file, std::size_t tracknum);
+  Track(string file);
+  Track(string file, size_t tracknum);
   ~Track();
-  std::string file;
-  std::size_t tracknum;
-  std::string trackname;
-  bool is(std::string file, std::size_t tracknum);
+  string file;
+  size_t tracknum;
+  string trackname;
+  bool is(string file, size_t tracknum);
 };
 
 class Playlist {
 public:
   Playlist();
-  Playlist(std::string playlist_file);
+  Playlist(string playlist_file);
   ~Playlist();
-  std::vector<Track> tracks; 
-  std::vector<std::size_t> play_order;
+  vector<Track> tracks; 
+  vector<size_t> play_order;
   
-  bool add_track(std::string file, std::size_t tracknum);
-  std::size_t add_tracks(std::string file);
-  bool remove_track(std::size_t index);
+  bool add_track(string file, size_t tracknum);
+  size_t add_tracks(string file);
+  bool remove_track(size_t index);
   Track current_track();
-  Track get_track(std::size_t index);
+  Track get_track(size_t index);
   void shuffle(bool shuffle, bool live);
   void repeat(bool);
 
-  std::size_t advance();
-  std::size_t back();
-  std::size_t jump_to(std::size_t tracknum);
+  size_t advance();
+  size_t back();
+  size_t jump_to(size_t tracknum);
   bool at_beginning();
   bool at_end();
-  std::size_t size();
+  size_t size();
   void clear();
   
 private:
   
-  std::size_t current_track_;
-  std::size_t tracks_from_file(std::string file);
+  size_t current_track_;
+  size_t tracks_from_file(string file);
   bool repeat_;
 
 };

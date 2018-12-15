@@ -4,6 +4,11 @@
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include <ctype.h>
+
+using std::string;
+using std::vector;
+using std::size_t;
 
 
 /**
@@ -11,10 +16,10 @@
  * 
  * @param file The music file for this track.
  */
-Track::Track(std::string file) {
+Track::Track(string file) {
   this->file = file;
   this->tracknum = 1;
-  this->trackname = std::string();
+  this->trackname = string();
 }
 
 /**
@@ -24,7 +29,7 @@ Track::Track(std::string file) {
  * @param tracknum The track number from the file for this entry
  * @return 
  */
-Track::Track(std::string file, std::size_t tracknum) {
+Track::Track(string file, size_t tracknum) {
   this->file = file;
   this->tracknum = tracknum;
 }
@@ -35,7 +40,7 @@ Track::Track(std::string file, std::size_t tracknum) {
 Track::~Track() {
 }
 
-bool Track::is(std::string file, std::size_t tracknum) {
+bool Track::is(string file, size_t tracknum) {
   return (!this->file.compare(file) && this->tracknum == tracknum);
 }
 
@@ -52,7 +57,7 @@ Playlist::Playlist() {
  * @param 
  * @return 
  */
-Playlist::Playlist(std::string playlist_file) {
+Playlist::Playlist(string playlist_file) {
 }
 
 /**
@@ -68,9 +73,10 @@ Playlist::~Playlist() {
  * @param tracknum The track number from the music file for the new track.
  * @return true if the operation succeeded.
  */
-bool Playlist::add_track(std::string file, std::size_t tracknum) {
+bool Playlist::add_track(string file, size_t tracknum) {
   this->play_order.emplace_back(this->tracks.size());
   this->tracks.emplace_back(file, tracknum);
+  return true;
 }
 
 /**
@@ -79,7 +85,8 @@ bool Playlist::add_track(std::string file, std::size_t tracknum) {
  * @param file The file to read tracks from.
  * @return The number of new tracks added.
  */
-std::size_t Playlist::add_tracks(std::string file) {
+size_t Playlist::add_tracks(string file) {
+  return 0;
 }
 
 /**
@@ -88,7 +95,7 @@ std::size_t Playlist::add_tracks(std::string file) {
  * @param index The index of the track to be removed.
  * @return true if the index is not greater than the size of the playlist
  */
-bool Playlist::remove_track(std::size_t index) {
+bool Playlist::remove_track(size_t index) {
   // this probably isn't the right way to do this...
   if (index < this->tracks.size()) {
 //    delete this->tracks.at(index)
@@ -117,7 +124,7 @@ Track Playlist::current_track() {
  * @param index The index of the track to be retrieved.
  * @return The requested track.
  */
-Track Playlist::get_track(std::size_t index) {
+Track Playlist::get_track(size_t index) {
   return this->tracks.at(this->play_order[index]);
 }
 
@@ -125,7 +132,7 @@ Track Playlist::get_track(std::size_t index) {
  * Shuffles the playlist
  */
 void Playlist::shuffle(bool shuffle, bool live) {
-  std::size_t now_playing = this->play_order[this->current_track_];
+  size_t now_playing = this->play_order[this->current_track_];
   if (shuffle) {
     int seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::shuffle(this->play_order.begin(), this->play_order.end(), 
@@ -133,7 +140,7 @@ void Playlist::shuffle(bool shuffle, bool live) {
     // if this is a live shuffle, move the currently playing track to the front
     // and set our track pointer to it.
     if (live) {
-      for (std::size_t i=0; i < this->tracks.size(); i++) {
+      for (size_t i=0; i < this->tracks.size(); i++) {
         if (this->play_order[i] == now_playing) {
           this->play_order[i] = this->play_order[0];
           break;
@@ -144,7 +151,7 @@ void Playlist::shuffle(bool shuffle, bool live) {
     }
   } else {
     this->play_order.clear();
-    for (std::size_t i=0; i < this->tracks.size(); i++) {
+    for (size_t i=0; i < this->tracks.size(); i++) {
       this->play_order.emplace_back(i);
     }
     if (live)
@@ -161,7 +168,7 @@ void Playlist::repeat(bool repeat) {
  * 
  * @return The new current track index.
  */
-std::size_t Playlist::advance() {
+size_t Playlist::advance() {
   if (this->current_track_ < this->tracks.size()-1)
     this->current_track_++;
   else if (this->repeat_) {
@@ -175,7 +182,7 @@ std::size_t Playlist::advance() {
  * 
  * @return The new current track index.
  */
-std::size_t Playlist::back() {
+size_t Playlist::back() {
   if (this->current_track_ > 0)
     this->current_track_--;
   else if (this->repeat_) {
@@ -190,7 +197,7 @@ std::size_t Playlist::back() {
  * @param tracknum The index of the new track.
  * @return The new current track index.
  */
-std::size_t Playlist::jump_to(std::size_t tracknum) {
+size_t Playlist::jump_to(size_t tracknum) {
   if (tracknum < this->tracks.size())
     this->current_track_ = tracknum;
   return this->current_track_;
@@ -214,7 +221,7 @@ bool Playlist::at_end() {
   return !(this->repeat_ || (this->current_track_ < this->tracks.size() - 1));
 }
 
-std::size_t Playlist::size() {
+size_t Playlist::size() {
   return this->tracks.size();
 }
 
