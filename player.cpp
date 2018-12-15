@@ -17,13 +17,13 @@ int const scope_width = 512;
 #include "Audio_Scope.h"
 #include "Playlist.h"
 
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdlib>
+#include <cstdio>
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "SDL.h"
+#include <SDL.h>
 
 void handle_error(const char*);
 
@@ -94,12 +94,12 @@ static void start_track(int track, const char* path)
   SDL_WM_SetCaption(title, title);
 
   char* now_playing_file;
-  if (now_playing_file = std::getenv("CHIPPY_NOW_PLAYING_FILE")) {
+  if ((now_playing_file = std::getenv("CHIPPY_NOW_PLAYING_FILE"))) {
     if (player->track_count() <= 1) {
-      sprintf(title, "%s\n%s",
+      sprintf(title, "%s: %s (%ld:%02ld)",
           game, player->track_info().song, seconds / 60, seconds % 60);
     } else {
-      sprintf(title, "%s\nTrack %d",
+      sprintf(title, "%s: %d/%d %s (%ld:%02ld)",
           game, track, player->track_count(), player->track_info().song,
           seconds / 60, seconds % 60);
     }
@@ -208,6 +208,7 @@ int main(int argc, char** argv)
               case SDLK_q:
               case SDLK_ESCAPE: // quit
                 running = false;
+                exit(0);
                 break;
 
               case SDLK_LEFT: // prev track
