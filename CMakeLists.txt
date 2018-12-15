@@ -1,5 +1,6 @@
 find_package(SDL QUIET)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(player_SRCS Audio_Scope.cpp
                 Audio_Scope.h
                 Music_Player.cpp
