@@ -140,6 +140,12 @@ void parseopts( int argc, char** argv, flags &opts ) {
 
 int main( int argc, char** argv )
 {
+
+  if (argc < 2) {
+      printf("Usage:\n");
+      printf("%s <chiptunes_file> [<chiptunes_file> ...]\n", argv[0]);
+      return 0;
+  }
   flags opts;
   opts.shuffle = false;
   opts.repeat = false;
